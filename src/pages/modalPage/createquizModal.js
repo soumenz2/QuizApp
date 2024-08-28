@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../style.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CreateQuizModal = ({ isOpen, onClose }) => {
   const [quizName,setQuizName]=useState('')
@@ -11,6 +12,10 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
   const [selectedOptionType, setSelectedOptionType] = useState('Text');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const[correctAnswerIndex,setCorrectAnswerIndex] = useState(999)
+  const [isQuizCreated, setIsQuizCreated] = useState(false);
+  const [quizLink, setQuizLink] = useState('');
   
   
   const [questions, setQuestions] = useState(
@@ -102,6 +107,22 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
     updatedQuestions[currentQuestionIndex].options[index].imageURL = e.target.value;
     setQuestions(updatedQuestions);
   };
+  const setCorrectAnswer = (index, value) => {
+    let updatedQuestions = [...questions];
+
+    for(let i = 0 ; i < updatedQuestions[currentQuestionIndex]?.options?.length;i++){
+      if(i === index){
+        updatedQuestions[currentQuestionIndex].options[i].isCorrect = true;
+      }else{
+        updatedQuestions[currentQuestionIndex].options[i].isCorrect = false;
+
+      }
+    }
+    
+    console.log(updatedQuestions)
+    
+    setQuestions(updatedQuestions);
+  };
   
 
   const handleAddOption = () => {
@@ -142,11 +163,14 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
   
     try {
       const response = await axios.post('http://localhost:3000/api/setquestion', quizData);
-      console.log('Quiz created successfully:', response.data);
+      console.log('Quiz created successfully:', response.data.data);
       // Handle success (e.g., close the modal, clear the form)
       if (step === 2) {
-        setStep(2);
+        setStep(3);
       }
+      setIsQuizCreated(true);
+      setQuizLink(`http://localhost:3001/quiz/${response.data.data.quiz.quizID}`);
+
     } catch (error) {
       console.error('Error creating quiz:', error);
       // Handle error
@@ -252,6 +276,14 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
             <div className='box1'>
             {selectedOptionType==='Text' && questions[currentQuestionIndex].options.map((option, index) => (
             <div className="input-field-option" key={index}>
+              { quizType==='Q & A' &&
+                <input
+                type="radio"
+                value={option.isCorrect}
+                checked={option.isCorrect}
+                onChange={(e) => setCorrectAnswer(index,e)}
+              />
+              }
               
               <input
                 type="text"
@@ -270,6 +302,14 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
           ))}
              {selectedOptionType==='Image URL' && questions[currentQuestionIndex].options.map((option, index) => (
             <div className="input-field-option" key={index}>
+                  { quizType==='Q & A' &&
+                <input
+                type="radio"
+                value={option.isCorrect}
+                checked={option.isCorrect}
+                onChange={(e) => setCorrectAnswer(index,e)}
+              />
+              }
               
               <input
                 type="text"
@@ -288,7 +328,14 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
           ))}
              {selectedOptionType==='Text & Image URL' && questions[currentQuestionIndex].options.map((option, index) => (
             <div className="input-field-option" key={index}>
-              
+                  { quizType==='Q & A' &&
+                <input
+                type="radio"
+                value={option.isCorrect}
+                checked={option.isCorrect}
+                onChange={(e) => setCorrectAnswer(index,e)}
+              />
+              }
               <input
                 type="text"
                 className="input-field-option-input"
@@ -362,6 +409,16 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
     </div>
           </>
         )}
+         {isQuizCreated  && (
+          <div className="success-modal">
+            <h2>Congrats your Quiz is Published!</h2>
+            <p>Quiz Link: <a href={quizLink}>{quizLink}</a></p>
+            <button className="share-button">Share</button>
+            <button className="close-button" onClick={onClose}>Close</button>
+          </div>
+        )}
+
+
       </div>
     </div>
   );

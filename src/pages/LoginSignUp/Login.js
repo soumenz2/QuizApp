@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserId } from '../../redux/userslices';// Import the action
 import { jwtDecode } from 'jwt-decode';
+import API_BASE_URL from '../../config/config';
 
 
 const Login = () => {
@@ -28,7 +29,8 @@ const Login = () => {
         onSubmit: async(values) => {
           try{
             console.log("Login Data Submitted: ", values);
-            const response = await axios.post('http://localhost:3000/api/login', values);
+            console.log(API_BASE_URL)
+            const response = await axios.post(`${API_BASE_URL}/login`, values);
             const { token } = response.data;
             console.log("login sucessfully",response.data)
 
@@ -43,7 +45,7 @@ const Login = () => {
 
         // Dispatch the action to store userId in Redux
         dispatch(setUserId(userId));
-        navigate('/dashboard')
+        //navigate('/dashboard')
 
           }catch(err){
             console.error('Login failed', err);
@@ -55,7 +57,7 @@ const Login = () => {
     <div>
         <form  onSubmit={formik.handleSubmit} method="POST">
           
-           
+          
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input

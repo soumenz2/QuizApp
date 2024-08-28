@@ -1,0 +1,104 @@
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .question-box {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .question-number {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .timer {
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+  }
+  
+  .question-text {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns, equally spaced */
+    gap: 10px; /* Space between grid items */
+    margin-top: 10px;
+  }
+  @media (max-width: 600px) {
+    .options-container {
+      grid-template-columns: 1fr; /* Single column for mobile screens */
+    }
+  }
+  
+  .option-box {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px;
+    flex: 1 1 45%;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .option-box:hover {
+    background-color: #c0c0c0;
+  }
+  
+  .next-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .next-button:hover {
+    background-color: #45a049;
+  }
+  .submit-button{
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .submit-button:hover {
+    background-color: #45a049;
+  }
+  .option-box.active {
+    border: 2px solid blue; /* Change the border color to indicate the active option */
+    background-color: #9b94b8; /* A light blue background to highlight the selection */
+  }
+  .option-box.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    background-color: #ccc; /* or any color you want for the disabled state */
+  }
+  

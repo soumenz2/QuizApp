@@ -1,33 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import '../style.css';
 import CreateQuizModal from '../modalPage/createquizModal';
+import API_BASE_URL from '../../config/config';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Analytics = () => {
+  const [quizData, setQuizData] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const quizzes = [
-    { id: 1, name: 'Quiz 1', createdOn: '01 Sep, 2023', impressions: '345' },
-    { id: 2, name: 'Quiz 2', createdOn: '04 Sep, 2023', impressions: '667' },
-    { id: 3, name: 'Quiz 3', createdOn: '06 Sep, 2023', impressions: '1.6K' },
-    { id: 4, name: 'Quiz 4', createdOn: '09 Sep, 2023', impressions: '789' },
-    { id: 5, name: 'Quiz 5', createdOn: '11 Sep, 2023', impressions: '995' },
-    { id: 6, name: 'Quiz 6', createdOn: '13 Sep, 2023', impressions: '2.5K' },
-    { id: 7, name: 'Quiz 7', createdOn: '14 Sep, 2023', impressions: '231' },
-    { id: 8, name: 'Quiz 8', createdOn: '17 Sep, 2023', impressions: '1.3K' },
-  ];
+  const userIDfromREdux=useSelector((state)=>state.user.userId)
+
+    
+  useEffect(() => {
+    const fetchQuizData = async () => {
+        try {
+            const userID = localStorage.getItem('user');
+            console.log(userID)
+            const response = await axios.get(`${API_BASE_URL}/getQuizWithDetails?userID=${userIDfromREdux}`);
+            
+            if (response.data.message === "Success") {
+                setQuizData(response.data.data);
+           
+            } else {
+                console.log('Error fetching data:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching quiz data:', error);
+        }
+    };
+
+    fetchQuizData();
+}, []);
+const quizzes = quizData.map((quiz) => ({
+  id:quiz.quizID,
+  name: quiz.quizName,
+  createdOn: new Date(quiz.DateOfCreation).toLocaleDateString(),
+  impressions: quiz.NoOfImpression,
+  type: quiz.quizType,
+  questions: quiz.questions.map((question) => ({
+    text: question.questionName,
+    attempts: question.correctlyAnswered + question.wronglyAnswered,
+    correct: question.correctlyAnswered,
+    incorrect: question.wronglyAnswered,
+    options: question.options.map((option) => ({
+      text: option.text,
+      opted: option.noOfOpted
+    }))
+  }))
+}));
+
 
   const handleAnalysisClick = (quiz) => {
     setSelectedQuiz(quiz);
   };
+  const handleDeleteClick = async (quizID) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/deleteQuiz/${quizID}`);
+        if (response.data.message === 'Quiz and its corresponding questions and options were successfully deleted.') {
+            // Update your state to remove the deleted quiz from the UI
+            setQuizData(prevData => prevData.filter(quiz => quiz.quizID !== quizID));
+        }
+    } catch (error) {
+        console.error('Error deleting quiz:', error);
+    }
+};
+
 
   return (
     <div className="content">
-      <h1 className="page-title">Quiz Analysis</h1>
-      <button onClick={openModal}>create quiz</button>
+    
 
       {!selectedQuiz ? (
+        <div className='content1'>
+          <h1 className="page-title">Quiz Analysis</h1>
+          <button onClick={openModal}>create quiz</button>
+     
         <table className="analytics-table">
           <thead>
             <tr>
@@ -48,7 +98,7 @@ const Analytics = () => {
                 <td>{quiz.impressions}</td>
                 <td className="actions">
                   <button className="edit-button">✏️</button>
-                  <button className="delete-button">🗑️</button>
+                  <button className="delete-button" onClick={() => handleDeleteClick(quiz.id)}>🗑️</button>
                   <button className="share-button">🔗</button>
                 </td>
                 <td>
@@ -58,11 +108,59 @@ const Analytics = () => {
             ))}
           </tbody>
         </table>
+        </div>
       ) : (
         <div className="question-analysis">
-          <h2>{selectedQuiz.name} Question Analysis</h2>
-          <p className="quiz-meta">Created on: {selectedQuiz.createdOn} | Impressions: {selectedQuiz.impressions}</p>
-          {/* Detailed question analysis content goes here */}
+           <div className="analysis-container">
+      <div className="quiz-header">
+        <h1>{selectedQuiz.name} Question Analysis</h1>
+        
+        <div className="quiz-meta">
+          <span>Created on: {selectedQuiz.createdOn}</span>
+          <span>Impressions: {selectedQuiz.impressions}</span>
+        </div>
+      </div>
+      
+      <div className="question-list">
+     
+        {selectedQuiz.questions.map((question, index) => (
+          <div key={index} className="question-item">
+            <h2>Q.{index + 1} {question.text}</h2>
+            
+            { selectedQuiz.type === "Poll Type" ? (
+                    <div className="poll-options">
+                      {question.options.map((option, i) => (
+                        <div key={i} className="option-box">
+                          <span className="option-value">{option.opted}</span>
+                          <span className="option-label">{option.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="metrics">
+                    <div className="metric-box">
+                      <span className="metric-value">{question.attempts}</span>
+                      <span className="metric-label">people Attempted the question</span>
+                    </div>
+                    <div className="metric-box">
+                      <span className="metric-value">{question.correct}</span>
+                      <span className="metric-label">people Answered Correctly</span>
+                    </div>
+                    <div className="metric-box">
+                      <span className="metric-value">{question.incorrect}</span>
+                      <span className="metric-label">people Answered Incorrectly</span>
+                    </div>
+                  </div>
+
+                  )
+
+            }
+         
+          </div>
+        ))}
+      </div>
+     
+    </div>
           <button onClick={() => setSelectedQuiz(null)}>Back to Quiz List</button>
         </div>
       )}

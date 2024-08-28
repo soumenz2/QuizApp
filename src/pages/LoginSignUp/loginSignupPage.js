@@ -43,7 +43,5 @@ function LoginSignup() {
     </div>
   );
 }
-LoginSignup.propTypes = {
-    swithToDashboard: PropTypes.func.isRequired
-  };
+
 export default LoginSignup;
