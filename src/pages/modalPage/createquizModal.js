@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import '../style.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { MdDelete } from "react-icons/md";
+import API_BASE_URL from '../../config/config';
 
 const CreateQuizModal = ({ isOpen, onClose }) => {
   const [quizName,setQuizName]=useState('')
   const userId = localStorage.getItem('user');
    
-    const [timer, setTimer] = useState('OFF');
+    const [timer, setTimer] = useState(0);
   const [quizType, setQuizType] = useState('Q & A');
   const [step, setStep] = useState(1);
   const [selectedOptionType, setSelectedOptionType] = useState('Text');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const[correctAnswerIndex,setCorrectAnswerIndex] = useState(999)
   const [isQuizCreated, setIsQuizCreated] = useState(false);
   const [quizLink, setQuizLink] = useState('');
   
@@ -45,7 +47,7 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
 
   const handleContinueClick = () => {
     if (quizName.trim() === '') {
-      alert('Quiz name cannot be empty');
+      toast.error('Quiz name cannot be empty')
       return;
     }
   
@@ -107,6 +109,12 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
     updatedQuestions[currentQuestionIndex].options[index].imageURL = e.target.value;
     setQuestions(updatedQuestions);
   };
+  const AddTimer = (value) => {
+    const updatedQuestions = [...questions];
+    setTimer(value)
+    updatedQuestions[currentQuestionIndex].timer = value;
+    setQuestions(updatedQuestions);
+  };
   const setCorrectAnswer = (index, value) => {
     let updatedQuestions = [...questions];
 
@@ -162,23 +170,29 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
     };
   
     try {
-      const response = await axios.post('http://localhost:3000/api/setquestion', quizData);
+      const response = await axios.post(`${API_BASE_URL}/setquestion`, quizData);
       console.log('Quiz created successfully:', response.data.data);
       // Handle success (e.g., close the modal, clear the form)
       if (step === 2) {
         setStep(3);
       }
       setIsQuizCreated(true);
-      setQuizLink(`http://localhost:3001/quiz/${response.data.data.quiz.quizID}`);
+      setQuizLink(`${window.location.origin}/quiz/${response.data.data.quiz.quizID}`);
 
     } catch (error) {
       console.error('Error creating quiz:', error);
       // Handle error
     }
   };
+  const onshare=()=>{
+    navigator.clipboard.writeText(quizLink);
+    console.log(quizLink)
+    toast.success("Link Copied to clipboard");
+  }
 
   return (
     <div className={`modal-overlay ${isOpen ? 'open' : ''}`} onClick={handleOverlayClick}>
+        <ToastContainer/>
       <div className="modal-content1">
         {step === 1 && (
           <>
@@ -296,7 +310,7 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
                 className="remove-option-button"
                 onClick={() => handleRemoveOption(index)}
               >
-                🗑️
+                <MdDelete />
               </button>
             </div>
           ))}
@@ -322,7 +336,7 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
                 className="remove-option-button"
                 onClick={() => handleRemoveOption(index)}
               >
-                🗑️
+                <MdDelete />
               </button>
             </div>
           ))}
@@ -354,7 +368,7 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
                 className="remove-option-button"
                 onClick={() => handleRemoveOption(index)}
               >
-                🗑️
+                <MdDelete />
               </button>
             </div>
           ))}
@@ -369,20 +383,20 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
               <div className="timer-options">
               <h4>Timer</h4>
                 <button
-                  className={`timer-option ${timer === 'OFF' ? 'selected' : ''}`}
-                  onClick={() => setTimer('OFF')}
+                  className={`timer-option ${timer === 0 ? 'selected' : ''}`}
+                  onClick={() => AddTimer(0)}
                 >
                   OFF
                 </button>
                 <button
-                  className={`timer-option ${timer === '5 sec' ? 'selected' : ''}`}
-                  onClick={() => setTimer('5 sec')}
+                  className={`timer-option ${timer === 5 ? 'selected' : ''}`}
+                  onClick={() => AddTimer(5)}
                 >
                   5 sec
                 </button>
                 <button
-                  className={`timer-option ${timer === '10 sec' ? 'selected' : ''}`}
-                  onClick={() => setTimer('10 sec')}
+                  className={`timer-option ${timer === 10 ? 'selected' : ''}`}
+                  onClick={() => AddTimer(10)}
                 >
                   10 sec
                 </button>
@@ -411,10 +425,12 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
         )}
          {isQuizCreated  && (
           <div className="success-modal">
+            <ToastContainer/>
+            <button className="close-button" onClick={onClose}>✕</button>
             <h2>Congrats your Quiz is Published!</h2>
             <p>Quiz Link: <a href={quizLink}>{quizLink}</a></p>
-            <button className="share-button">Share</button>
-            <button className="close-button" onClick={onClose}>Close</button>
+            <button className="share-link-button" onClick={onshare}>Share</button>
+      
           </div>
         )}
 

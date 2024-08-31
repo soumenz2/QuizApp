@@ -8,6 +8,9 @@ import { useDispatch } from 'react-redux';
 import { setUserId } from '../../redux/userslices';// Import the action
 import { jwtDecode } from 'jwt-decode';
 import API_BASE_URL from '../../config/config';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 const Login = () => {
@@ -49,12 +52,14 @@ const Login = () => {
 
           }catch(err){
             console.error('Login failed', err);
+            toast.error("Incorrect Email or Password");
           }
      
         }
       });
   return (
     <div>
+     <ToastContainer/>
         <form  onSubmit={formik.handleSubmit} method="POST">
           
           

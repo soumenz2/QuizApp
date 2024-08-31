@@ -3,6 +3,7 @@ import '../style.css';
 import axios from 'axios';
 import API_BASE_URL from '../../config/config';
 import { useSelector } from 'react-redux';
+import { FaEye } from "react-icons/fa";
 
 
 const Dashboard = () => {
@@ -74,15 +75,18 @@ const Dashboard = () => {
             <h2 className="trending-quizzes-heading">Trending Quizzes</h2>
             <div className="trending-quizzes-grid">
                 {quizzes.map((quiz, index) => (
-                    <div key={index} className="quiz-card">
-                        <div className='quiz-header'>
-                        <h3 className="quiz-title">{quiz.title}</h3>
-                        <p className="quiz-impressions">{quiz.impressions} <span role="img" aria-label="eye">👁️</span></p>
+                    quiz.impressions >10 && (    <div key={index} className="quiz-card">
+                    <div className='quiz-header'>
+                    <h3 className="quiz-title">{quiz.title}</h3>
+                    <p className="quiz-impressions">{quiz.impressions} <span role="img" aria-label="eye"><FaEye /></span></p>
 
-                        </div>
-                        
-                        <p className="quiz-date">Created on: {quiz.createdOn}</p>
                     </div>
+                    
+                    <p className="quiz-date">Created on: {quiz.createdOn}</p>
+                </div>
+                    )
+                    
+                
                 ))}
             </div>
         </div>
