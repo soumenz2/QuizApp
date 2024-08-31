@@ -13,6 +13,12 @@
     margin-bottom: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+  @media (max-width: 768px) {
+    .question-box {
+      width: 90vw; /* Adjust the width for mobile devices */
+      padding: 15px; /* Reduce padding for mobile devices */
+    }
+  }
   
   .question-header {
     display: flex;
