@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 import './style.css';
-import { useNavigate } from 'react-router-dom';
+
 import { useDispatch } from 'react-redux';
 import { clearUserId } from '../redux/userslices';
 
@@ -15,6 +15,9 @@ const Sidebar = () => {
         navigate('/')
     
     };
+    const openCreateQuiz = () => {
+        navigate('/analytics', { state: { openCreateQuizModal: true } });
+    };
     return (
         <div className="sidebar">
             <h1>QUIZZIE</h1>
@@ -26,13 +29,7 @@ const Sidebar = () => {
                     <Link to="/analytics" className="sidebar-link">Analytics</Link>
                 </li>
                 <li>
-                    {/* <Link to="/create-quiz" className="sidebar-link">Create Quiz</Link> */}
-                    <button onClick={(e) => { 
-                        e.preventDefault(); 
-                        
-                    }}>
-                        Create Quiz
-                    </button>
+                    <button onClick={openCreateQuiz}>Create Quiz</button>
                 </li>
             </ul>
             

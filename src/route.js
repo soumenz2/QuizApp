@@ -1,5 +1,5 @@
-import React,{useState,useEffect} from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { BrowserRouter as Router, Route, Routes,  } from 'react-router-dom';
 import Sidebar from './pages/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
 import Analytics from './pages/analytics/Analytics';
@@ -8,15 +8,15 @@ import LoginSignup from './pages/LoginSignUp/loginSignupPage';
 import '../src/pages/style.css'; 
 import { useSelector } from 'react-redux';
 
-import QuizPage from './pages/quizPage/quizpage';
+
 
 
 
 function AdminRouter() {
-
   
 
   const userIDfromREdux=useSelector((state)=>state.user.userId)
+
 
 
   return (

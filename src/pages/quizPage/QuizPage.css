@@ -62,14 +62,18 @@
     height:8vh;
     margin: 5px;
     flex: 1 1 45%;
+    font-size: 14px;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s;
   }
   @media (max-width: 600px) {
     .quiz-option-box {
-      width:40vw;
+      width:80vw;
       height:8vh;
+      text-align: center;
+      justify-items: center;
+      justify-content: center;
     }
   }
   

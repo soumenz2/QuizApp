@@ -25,8 +25,6 @@ const QuizPage = () => {
             initialTimers[question.questionID] = question.timer;
           });
           setTimers(initialTimers);
-
-          await axios.post(`${API_BASE_URL}/incrementQuizImpression`, { quizID });
         } catch (error) {
           console.error('Failed to fetch quiz data:', error);
         }

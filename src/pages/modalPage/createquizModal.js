@@ -135,7 +135,7 @@ const CreateQuizModal = ({ isOpen, onClose }) => {
 
   const handleAddOption = () => {
     const updatedQuestions = [...questions];
-    if(updatedQuestions[currentQuestionIndex].options.length < 5 ){
+    if(updatedQuestions[currentQuestionIndex].options.length < 4 ){
       updatedQuestions[currentQuestionIndex].options.push({
         text: '',
         imageURL: '',

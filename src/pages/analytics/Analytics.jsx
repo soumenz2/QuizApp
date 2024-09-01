@@ -11,6 +11,7 @@ import {  FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineShare } from "react-icons/md";
 import { IoArrowBack } from "react-icons/io5";
+import { useLocation } from 'react-router-dom';
 
 const Analytics = () => {
   const [quizData, setQuizData] = useState([]);
@@ -27,6 +28,7 @@ const Analytics = () => {
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
   const userIDfromREdux=useSelector((state)=>state.user.userId)
   const [selectedQuizID,setSelectedQuizId]=useState('')
+  const location = useLocation();
 
     
   useEffect(() => {
@@ -49,6 +51,12 @@ const Analytics = () => {
 
     fetchQuizData();
 }, []);
+
+useEffect(() => {
+  if (location.state?.openCreateQuizModal) {
+      setIsModalOpen(true);
+  }
+}, [location.state]);
 const quizzes = quizData.map((quiz) => ({
   id:quiz.quizID,
   name: quiz.quizName,
@@ -111,7 +119,6 @@ const EditQuiz=(quizID)=>{
       {!selectedQuiz ? (
         <div className='content1'>
           <h1 className="page-title">Quiz Analysis</h1>
-          <button onClick={openModal}>create quiz</button>
      
         <table className="analytics-table">
           <thead>
@@ -166,9 +173,9 @@ const EditQuiz=(quizID)=>{
             { selectedQuiz.type === "Poll Type" ? (
                     <div className="poll-options">
                       {question.options.map((option, i) => (
-                        <div key={i} className="option-box">
-                          <span className="option-value">{option.opted}</span>
-                          <span className="option-label">{option.text}</span>
+                        <div key={i} className="metric-box">
+                          <div className="option-value">{option.opted}</div>
+                          <div className="option-label">Option {i+1}</div>
                         </div>
                       ))}
                     </div>
