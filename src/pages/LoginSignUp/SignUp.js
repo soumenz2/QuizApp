@@ -5,6 +5,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API_BASE_URL from '../../config/config';
 
 const SignUp = ({ setIsSignup }) => {
 
@@ -37,7 +38,7 @@ const SignUp = ({ setIsSignup }) => {
     onSubmit: async (values) => {
       try {
         await axios
-          .post("http://localhost:3000/api/signup", values)
+          .post(`${API_BASE_URL}//signup`, values)
           .then((res) => {
             console.log("entered sucess part");
             toast.success(res.data.message);
