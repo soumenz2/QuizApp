@@ -29,25 +29,24 @@ const Analytics = () => {
   const userIDfromREdux=useSelector((state)=>state.user.userId)
   const [selectedQuizID,setSelectedQuizId]=useState('')
   const location = useLocation();
-
+  const fetchQuizData = async () => {
+    try {
+        const userID = localStorage.getItem('user');
+        console.log(userID)
+        const response = await axios.get(`${API_BASE_URL}/getQuizWithDetails?userID=${userIDfromREdux}`);
+        
+        if (response.data.message === "Success") {
+            setQuizData(response.data.data);
+       
+        } else {
+            console.log('Error fetching data:', response.data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching quiz data:', error);
+    }
+};
     
   useEffect(() => {
-    const fetchQuizData = async () => {
-        try {
-            const userID = localStorage.getItem('user');
-            console.log(userID)
-            const response = await axios.get(`${API_BASE_URL}/getQuizWithDetails?userID=${userIDfromREdux}`);
-            
-            if (response.data.message === "Success") {
-                setQuizData(response.data.data);
-           
-            } else {
-                console.log('Error fetching data:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error fetching quiz data:', error);
-        }
-    };
 
     fetchQuizData();
 }, []);
@@ -89,12 +88,13 @@ const quizzes = quizData.map((quiz) => ({
     try {
         const response = await axios.delete(`${API_BASE_URL}/deleteQuiz?quizID=${quizToDelete}`);
         if (response.status === 200) {
-            // Update your state to remove the deleted quiz from the UI
-            setQuizData(prevData => prevData.filter(quiz => quiz.quizID !== quizToDelete));
-            closeDeleteModal()
+          closeDeleteModal();
+          fetchQuizData(); 
+          toast.success("Quiz deleted successfully.");
         }
     } catch (error) {
         console.error('Error deleting quiz:', error);
+        toast.error("Failed to delete quiz.");
     }
 };
 const onshare=(quizID)=>{
