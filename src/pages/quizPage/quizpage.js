@@ -115,7 +115,7 @@ const QuizPage = () => {
           {currentQuestion.questionType !== 'Poll Type' ? (
             <>
               <h2>Congrats! Quiz is completed</h2>
-              <img src="https://s3-alpha-sig.figma.com/img/f47f/6d98/a013b07f931834dfba3cd6ddc9130436?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hqgWGAHO1eoSVRrHiuP4GggRnoZT5~hNNRliyDBS~3Xsjz9uvHvcwBMIAkUjDOvR1X0Sz4IL17PmHvFPEojOw713O3YL~wR7KC6iwNtwC4RTZWwQRnbm10-GEqyFQ5S88k~2Ts6J8HekuikNXTRAQiCZUvQJv7hN19isOMyXlPY6SAp43wmE3a24Am~weZPVSs33iv3ADjGRVWxZdvkNSsu--LyWF4chWOYam18dgGqEjUE0~JoBOO5vraDdoe45YymaUwl88H13Oa-VN2OSR5m2RwrUPwJaHFv19cOgSUx1A2~Ma0SDfG4755t0SnAa69u2lp5RdRuHY1FtGfgToQ__" alt="Trophy" className="trophy-icon" />
+              <img src="https://plus.unsplash.com/premium_photo-1683141313974-34b132148f5b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dHJvcGh5fGVufDB8fDB8fHww" alt="Trophy" className="trophy-icon" />
               <p>Your Score is <span className="score">{score}/{quizData.questions.length}</span></p>
             </>
           ) : (
